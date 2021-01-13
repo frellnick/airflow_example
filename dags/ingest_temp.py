@@ -8,7 +8,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 
-from dependencies import get_file_operations
+from dependencies import get_file_operations, copy_files
 
 
 default_args = {
@@ -37,7 +37,7 @@ prepare = PythonOperator(
 
 def branch_if_fileops(**kwargs):
     if len(kwargs['ti'].xcom_pull(key='fileops')) > 0:
-        return 'totable'  # Change for file operations
+        return 'totable', 'copyfiles'
     return 'join'
 
 
@@ -60,10 +60,18 @@ totable = DummyOperator(  ## Create task for all partners + adhoc, same with cop
     dag=dag,
 )
 
+copyfiles = PythonOperator(
+    task_id='copyfiles',
+    python_callable=copy_files,
+    provide_context=True,
+    dag=dag,
+)
+
 falsetask = DummyOperator(
     task_id='falsetask',
     dag=dag,
 )
+
 prepare >> branching
-branching >> totable >> join 
+branching >> totable >> copyfiles >> join 
 branching >> falsetask >> join

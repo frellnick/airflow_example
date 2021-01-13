@@ -2,11 +2,11 @@
 
 import time
 from airflow.contrib.operators.gcs_list_operator import GoogleCloudStorageListOperator
-from airflow.contrib.operators.gcs_to_gcs import GoogleCloudStorageToGoogleCloudStorage
-
 from airflow.models import Variable
 
+from .operators import GoogleCloudStorageToGoogleCloudStorageOperator
 from .partners import get_partner
+from .log import get_logger
 
 
 """
@@ -27,8 +27,13 @@ def define_table_name(filename:str) -> str:
 
 
 def define_file_operation(filename: str) -> dict:
+    partner = get_partner(filename)
+    table_name = define_table_name(filename)
+    extension = filename.split('.')[-1]
+    destination_filename = f"{partner}/{table_name}.{extension}"
     return {
         'filename': filename,
+        'destination_filename': destination_filename,
         'partner': get_partner(filename),
         'table_name': define_table_name(filename),
     }
@@ -51,13 +56,32 @@ def get_file_operations(*args, **kwargs):
     kwargs['ti'].xcom_push(key='fileops', value=payload)
     return payload
 
+
+
 """
 File Copy
 
 Copy files per instruction from staging bucket to long term storage.
 """
+copy_log = get_logger('copy')
+
 def copy_file(fileop:dict, **kwargs):
-    pass
+    operator = GoogleCloudStorageToGoogleCloudStorageOperator(
+        task_id='copy_single_file',
+        source_bucket=Variable.get('bucket_tmp1'),
+        source_object=fileop['filename'],
+        destination_bucket=Variable.get('bucket_lts1'),
+        destination_object=fileop['destination_filename'],
+        move_object=True,
+        google_cloud_storage_conn_id='google_cloud_storage_default',
+    )
+
+    try:
+        operator.execute(kwargs)
+        copy_log.info(f"Copy Successful:\n{fileop}")
+    except Exception as e:
+        copy_log.error(f"Copy failed:\n{fileop}")
+        ## Non blocking.  raise e if this step should error out the workflow.
 
 
 def copy_files(*args, **kwargs):
