@@ -8,7 +8,9 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 
-from dependencies import get_file_operations, copy_files, files_to_bigquery
+from dependencies.file_handling.staging import get_file_operations
+from dependencies.file_handling.archive import copy_files 
+from dependencies.file_handling.bigquery import files_to_bigquery
 
 
 default_args = {
