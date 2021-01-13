@@ -11,6 +11,7 @@ from airflow.contrib.operators.gcs_list_operator import GoogleCloudStorageListOp
 from airflow.models import Variable
 
 from .partners import get_partner
+from .profile import get_schema
 
 
 
@@ -24,7 +25,7 @@ def define_table_name(filename:str) -> str:
     return _strip_end(filename) + f'_{_gen_guid()}'
 
 
-def define_file_operation(filename: str) -> dict:
+def define_file_operation(filename: str, **kwargs) -> dict:
     partner = get_partner(filename)
     table_name = define_table_name(filename)
     extension = filename.split('.')[-1]
@@ -34,6 +35,7 @@ def define_file_operation(filename: str) -> dict:
         'destination_filename': destination_filename,
         'partner': get_partner(filename),
         'table_name': define_table_name(filename),
+        'schema': get_schema(filename, **kwargs)
     }
 
 
@@ -49,7 +51,7 @@ def get_file_operations(*args, **kwargs):
 
     payload = []
     for f in files:
-        payload.append(define_file_operation(f))
+        payload.append(define_file_operation(f, **kwargs))
 
     kwargs['ti'].xcom_push(key='fileops', value=payload)
     return payload

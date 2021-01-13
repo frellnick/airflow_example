@@ -42,8 +42,8 @@ prepare = PythonOperator(
 
 def branch_if_fileops(**kwargs):
     if len(kwargs['ti'].xcom_pull(key='fileops')) > 0:
-        return 'totable', 'copyfiles'
-    return 'join'
+        return 'files_to_bigquery'
+    return 'falsetask'
 
 
 branching = BranchPythonOperator(
@@ -60,10 +60,6 @@ join = DummyOperator(
     dag=dag,
 )
 
-totable = DummyOperator(  ## Create task for all partners + adhoc, same with copy
-    task_id='totable',
-    dag=dag,
-)
 
 filestobigquery = PythonOperator(
     task_id='tobigquery',
@@ -72,6 +68,7 @@ filestobigquery = PythonOperator(
     dag=dag,
 )
 
+
 copyfiles = PythonOperator(
     task_id='copyfiles',
     python_callable=copy_files,
@@ -79,11 +76,13 @@ copyfiles = PythonOperator(
     dag=dag,
 )
 
+
 falsetask = DummyOperator(
     task_id='falsetask',
     dag=dag,
 )
 
+
 prepare >> branching
-branching >> totable >> copyfiles >> join 
+branching >> files_to_bigquery >> copyfiles >> join 
 branching >> falsetask
