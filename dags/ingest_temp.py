@@ -4,7 +4,7 @@ import airflow
 from airflow import DAG
 from datetime import timedelta
 
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 
@@ -44,6 +44,7 @@ def branch_if_fileops(**kwargs):
 branching = BranchPythonOperator(
     task_id='branching',
     python_callable=branch_if_fileops,
+    provide_context=True,
     dag=dag
 )
 
@@ -59,4 +60,10 @@ totable = DummyOperator(  ## Create task for all partners + adhoc, same with cop
     dag=dag,
 )
 
-prepare >> branching >> totable >> join
+falsetask = DummyOperator(
+    task_id='falsetask',
+    dag=dag,
+)
+prepare >> branching
+branching >> totable >> join 
+branching >> falsetask >> join
