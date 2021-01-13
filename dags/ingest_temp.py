@@ -8,13 +8,18 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 
-from dependencies import get_file_operations, copy_files
+from dependencies import get_file_operations, copy_files, files_to_bigquery
 
 
 default_args = {
     'start_date': airflow.utils.dates.days_ago(0),
     'retries': 1,
-    'retry_delay': timedelta(minutes=5)
+    'retry_delay': timedelta(minutes=5),
+    'email': ['udrc@utah.gov'],
+    'email_on_failure': False,  # Set to True in production
+    'email_on_retry': False,  # Set to True in production
+    # 'on_failure_callback': SomeFunction,
+    # 'on_success_callback': SomeFunction,  ## Notify User
 }
 
 
@@ -60,6 +65,13 @@ totable = DummyOperator(  ## Create task for all partners + adhoc, same with cop
     dag=dag,
 )
 
+filestobigquery = PythonOperator(
+    task_id='tobigquery',
+    python_callable=files_to_bigquery,
+    provide_context=True,
+    dag=dag,
+)
+
 copyfiles = PythonOperator(
     task_id='copyfiles',
     python_callable=copy_files,
@@ -74,4 +86,4 @@ falsetask = DummyOperator(
 
 prepare >> branching
 branching >> totable >> copyfiles >> join 
-branching >> falsetask >> join
+branching >> falsetask

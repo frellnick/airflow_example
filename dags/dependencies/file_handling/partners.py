@@ -1,5 +1,9 @@
-# partners.py
+"""
+Partners
 
+Define partner specific functions and inference operations.
+TODO: Integrate into staging or profiler
+"""
 valid_partners = [
     'usbe', 
     'ushe',

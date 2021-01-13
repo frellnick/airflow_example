@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# FROM: https://airflow.apache.org/docs/apache-airflow/1.10.14/_modules/airflow/contrib/operators/gcs_to_gcs.html
+
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
