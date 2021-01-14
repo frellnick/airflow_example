@@ -37,7 +37,7 @@ def define_file_operation(filename: str, **kwargs) -> dict:
         'partner': get_partner(filename),
         'tablename': define_table_name(filename),
         'schema': get_schema(
-            read_head(filename, Variable.get('bucket_tmp1'), **kwargs)
+            read_head(filename, Variable.get('BUCKET_TMP1'), **kwargs)
             )
     }
 
@@ -45,7 +45,7 @@ def define_file_operation(filename: str, **kwargs) -> dict:
 def get_file_operations(*args, **kwargs):
     getter = GoogleCloudStorageListOperator(
         task_id = 'GCS_List_Staged_Files',
-        bucket=Variable.get('bucket_tmp1'),
+        bucket=Variable.get('BUCKET_TMP1'),
         delimiter='.csv',
         google_cloud_storage_conn_id='google_cloud_storage_default',
         depends_on_past=False,

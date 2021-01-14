@@ -16,9 +16,9 @@ copy_log = get_logger('copy')
 def copy_file(fileop:dict, **kwargs):
     operator = GoogleCloudStorageToGoogleCloudStorageOperator(
         task_id='copy_single_file',
-        source_bucket=Variable.get('bucket_tmp1'),
+        source_bucket=Variable.get('BUCKET_TMP1'),
         source_object=fileop['filename'],
-        destination_bucket=Variable.get('bucket_lts1'),
+        destination_bucket=Variable.get('BUCKET_LTS1'),
         destination_object=fileop['destination_filename'],
         move_object=True,
         google_cloud_storage_conn_id='google_cloud_storage_default',
