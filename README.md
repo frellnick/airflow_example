@@ -8,10 +8,10 @@ Apache Airflow DAG repository example
 * pytest
 * pandas
 * numpy
+* gcsfs
 
 ## Tests
-
-Tests are written with pytest module.
+Tests are written with pytest module.  Modules may not test outside of cloud emulated environment.
 
 Run tests with:
 
