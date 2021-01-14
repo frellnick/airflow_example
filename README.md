@@ -32,12 +32,12 @@ pytest
 
 GCP Composer CLI:
 ```bash
-gcloud composer environments run COMPOSER_ENVIRONMENT_NAME \
-    --location LOCATION trigger_dag -- DAG_NAME \
+gcloud composer environments run COMPOSER_ENVIRONMENT_NAME
+    --location LOCATION trigger_dag -- DAG_NAME
     --run_id= RUN_ID
 ```
 * COMPOSER_ENVIRONMENT_NAME is set on environment creation.  See dashboard or build script.
-* LOCATION is set on environment creation - refers to region of underlying compute engine.  See dashboard of build script.
+* LOCATION is set on environment creation - refers to region of underlying compute engine.  See dashboard or build script.
 * RUN_ID can be any number
 
 
@@ -56,9 +56,15 @@ gcloud composer environments create ENVIRONMENT_NAME
     --python-version=3
 ```
 
+Example:
+
+```bash
+gcloud composer environments create ingesttemp --location=us-west1 --disk-size="30GB" --env-variables=BUCKET_TEMP1=uswest_tmp1,BUCKET_LTS1=uswest_tmp1,BQ_PROJECT=<DEV_PROJECT_NAME> --machine-type=n1-standard-2 --zone=us-west-1a --node-count=3 --python-version=3
+```
+
 #### Environment Variables
 * BUCKET_TMP1: <BUCKET_NAME_TEMPORARY_STORAGE(INGEST)>
-* BUCKET_LTS2: <BUCKET_NAME_LONG_TERM_STORAGE(ARCHIVE)>
+* BUCKET_LTS1: <BUCKET_NAME_LONG_TERM_STORAGE(ARCHIVE)>
 * BQ_PROJECT: <BIGQUERY_PROJECT_NAME>
 * SENDGRID_MAIL_FROM: <The From: email address, such as noreply-composer@your-domain> --NOT IN USE V0.1
 * SENDBRID_API_KEY: <SendGrid API key> -- NOT IN USE V0.1
