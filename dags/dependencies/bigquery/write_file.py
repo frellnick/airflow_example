@@ -24,7 +24,7 @@ def write_file(fileop:dict, **kwargs):
         task_id='gcs_to_bq',
         bucket=Variable.get('bucket_tmp1'),
         source_objects=[fileop['filename']],
-        destination_project_dataset_table=f"{Variable.get('bq_project')}.{fileop['partner']}.{fileop['table_name']}",
+        destination_project_dataset_table=f"{Variable.get('bq_project')}.{fileop['partner']}.{fileop['tablename']}",
         schema_fields=fileop['schema'],
         write_disposition='WRITE_TRUNCATE',
         skip_leading_rows=1,

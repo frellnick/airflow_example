@@ -50,9 +50,12 @@ def _format_schema_dict(schema_dict, default_mode='NULLABLE'):
 def _is_date(col, data):
     d = data[col][0]
     try:
-        parse(d)
-        return True 
+        int(d)
+        return False
     except:
+        parse(d)
+        return True
+    finally:
         return False
 
 

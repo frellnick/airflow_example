@@ -28,14 +28,14 @@ def define_table_name(filename:str) -> str:
 
 def define_file_operation(filename: str, **kwargs) -> dict:
     partner = get_partner(filename)
-    table_name = define_table_name(filename)
+    tablename = define_table_name(filename)
     extension = filename.split('.')[-1]
-    destination_filename = f"{partner}/{table_name}.{extension}"
+    destination_filename = f"{partner}/{tablename}.{extension}"
     return {
         'filename': filename,
         'destination_filename': destination_filename,
         'partner': get_partner(filename),
-        'table_name': define_table_name(filename),
+        'tablename': define_table_name(filename),
         'schema': get_schema(
             read_head(filename, Variable.get('bucket_tmp1'), **kwargs)
             )
