@@ -62,7 +62,7 @@ join = DummyOperator(
 
 
 filestobigquery = PythonOperator(
-    task_id='tobigquery',
+    task_id='filestobigquery',
     python_callable=files_to_bigquery,
     provide_context=True,
     dag=dag,

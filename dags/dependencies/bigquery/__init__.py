@@ -1,1 +1,1 @@
-from .load import files_to_bigquery
+from .write_file import files_to_bigquery
