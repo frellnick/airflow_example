@@ -1,0 +1,25 @@
+resource "google_composer_environment" "test" {
+    name   = "mycomposer"
+    region = "us-central1"
+  
+    config {
+      software_config {
+        airflow_config_overrides = {
+          core-load_example = "True"
+        }
+  
+        pypi_packages = {
+          pytest = ""
+          pandas = ""
+          numpy = ""
+          gcsfs = ""
+        }
+  
+        env_variables = {
+          BUCKET_TMP1 = ""
+          BUCKET_LTS1 = ""
+          BQ_PROJECT = ""
+        }
+      }
+    }
+  }

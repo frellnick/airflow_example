@@ -1,3 +1,5 @@
+# For syncing dags folder between repository-linked bucket and composer bucket
+# NOT COMPLETE 2020-01-14
 steps:
 - name: ubuntu
   args: ['bash', '-c', "echo '$COMMIT_SHA' > REVISION.txt"]
