@@ -27,8 +27,17 @@ class Profiler():
 def get_schema(data):
     plr = Profiler(endpoint='bq')
     schema = plr.profile(data)
-    return schema
+    return _format_schema_dict(schema)
 
+def _format_schema_dict(schema_dict, default_mode='NULLABLE'):
+    fs = []
+    for col in schema_dict:
+        fs.append(
+            {
+                'name': col, 
+                'type': schema_dict[col], 
+                'mode': default_mode})
+    return fs
 
 ## Profiler Helper Functions
 
