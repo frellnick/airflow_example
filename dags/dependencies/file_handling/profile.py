@@ -6,8 +6,11 @@ Profile .csv or dataframe object and return schema for loading into BigQuery
 
 import pandas as pd
 import numpy as np
+from collections import OrderedDict
 from dateutil.parser import parse
 
+from ..log import get_logger
+logger = get_logger(__name__)
 
 ### Profiler Class ###
 # Profiler
@@ -27,7 +30,10 @@ class Profiler():
 def get_schema(data):
     plr = Profiler(endpoint='bq')
     schema = plr.profile(data)
-    return _format_schema_dict(schema)
+    fschema = _format_schema_dict(schema)
+    logger.info(f'Raw Data Processed:\n{data.head(2)}')
+    logger.info(f'Schema created:\n{fschema}')
+    return fschema
 
 def _format_schema_dict(schema_dict, default_mode='NULLABLE'):
     fs = []
@@ -71,7 +77,7 @@ def _get_descriptions(dataframe: pd.DataFrame) -> list:
 
 def _get_dtypes(data: pd.DataFrame) -> dict:
     descriptions = _get_descriptions(data)
-    dtypes = {}
+    dtypes = OrderedDict()
     for d in descriptions:
         dtypes[d.name] = _get_base_type(d, data)
     return dtypes
