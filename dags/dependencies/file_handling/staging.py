@@ -12,7 +12,7 @@ from airflow.models import Variable
 
 from .partners import get_partner
 from .profile import get_schema
-from .load import load_from_bucket
+from .load import read_head
 
 
 
@@ -37,7 +37,7 @@ def define_file_operation(filename: str, **kwargs) -> dict:
         'partner': get_partner(filename),
         'table_name': define_table_name(filename),
         'schema': get_schema(
-            load_from_bucket(filename, Variable.get('bucket_tmp1'), **kwargs)
+            read_head(filename, Variable.get('bucket_tmp1'), **kwargs)
             )
     }
 
